@@ -51,15 +51,17 @@ void MainWindow::setupGrid(int rows, int columns)
 {
     //Clear existing items on GridLayout
     QLayoutItem *child;
-    while ((child = gridLayout->takeAt(0) != nullprt)) {
-        delete child->widget();
-        delete child;
-    }
+    child = gridLayout;
+    child->~QLayoutItem();
+    // while ((child = gridLayout->takeAt(0)->isEmpty() == false)) {
+    //     delete child->widget();
+    //     delete child;
+    // }
 
     //Populate grid with button for each cell
     // Populate grid with buttons for each cell
     for (int row = 0; row < rows; ++row) {
-        for (int col = 0; col < cols; ++col) {
+        for (int col = 0; col < columns; ++col) {
             QPushButton *button = new QPushButton(this);
             button->setFixedSize(30, 30); // Set a fixed size for each button
             gridLayout->addWidget(button, row, col);

@@ -1,6 +1,7 @@
 #ifndef DIFFICULTYSELECTOR_H
 #define DIFFICULTYSELECTOR_H
 
+#include <QComboBox>
 #include <QObject>
 #include <QWidget>
 
@@ -15,7 +16,7 @@ signals:
     void difficultyChanged(int rows, int columns); //Signal emitted when difficulty changes
 
 private:
-    QCombo *difficultyComboBox; //Combo box for selecting difficulty
+    QComboBox *difficultyComboBox; //Combo box for selecting difficulty
 
 private slots:
     void onDifficultyChanged(int index); //Slot for handling difficulty changes
