@@ -34,9 +34,8 @@ private:
     //function to setup dynamic grid based on difficulty
     void setupGrid(int rows, int columns);
     void resetGame();
-    void updateGridBasedOnDifficulty(const QString &difficulty);
 
 private slots:
-    void onDifficultyChanged(); // Slot to handle difficulty change
+    void updateGridBasedOnDifficulty(const QString &difficulty);
 };
 #endif // MAINWINDOW_H

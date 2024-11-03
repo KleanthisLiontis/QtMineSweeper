@@ -13,6 +13,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialize grid and add it to central widget
     gridLayout = new QGridLayout(this); // Make gridLayout a member variable in the header file
+    //Check the central widget if it has a layout and replace it
+    if (ui->centralwidget->layout()) {
+        QLayoutItem *child;
+        while ((child = ui->centralwidget->layout()->takeAt(0))) {
+            delete child->widget();
+            delete child;
+        }
+    }
+
     ui->centralwidget->setLayout(gridLayout);
 
     //Initialize status label
@@ -52,7 +61,7 @@ void MainWindow::setupGrid(int rows, int columns)
     //Clear existing items on GridLayout
     QLayoutItem *child;
     child = gridLayout;
-    child->~QLayoutItem();
+    //child->~QLayoutItem();
     // while ((child = gridLayout->takeAt(0)->isEmpty() == false)) {
     //     delete child->widget();
     //     delete child;
