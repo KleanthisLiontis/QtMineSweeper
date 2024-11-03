@@ -17,13 +17,18 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //function to setup dynamic grid based on difficulty
-    void setupGrid(int rows, int columns);
-
 private:
     Ui::MainWindow *ui;
     QGridLayout *gridLayout;
     QLabel *statusLabel;      // to display game status messages
     QPushButton *resetButton; //Button to reset the game
+    QGridLayout *gridLayout;
+    QComboBox *difficultyComboBox;          //Combo box for difficulty settings
+    DifficultySelector *difficultySelector; //Pointer to difficulty selector
+    //function to setup dynamic grid based on difficulty
+    void setupGrid(int rows, int columns);
+
+private slots:
+    void onDifficultyChanged(); // Slot to handle difficulty change
 };
 #endif // MAINWINDOW_H
