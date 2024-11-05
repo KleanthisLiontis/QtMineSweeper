@@ -1,42 +1,62 @@
 #include "difficultyselector.h"
+#include <QVBoxLayout>
 
 DifficultySelector::DifficultySelector(QWidget *parent)
-    : QWidget{parent}
+    : QDialog(parent)
     , difficultyComboBox(new QComboBox(this))
+    , okButton(new QPushButton("OK", this))
+    , rows(10)
+    , columns(10)
 {
-    //Add Difficulty levels to combo box
+    // Add difficulty levels
     difficultyComboBox->addItem("Easy");
     difficultyComboBox->addItem("Medium");
     difficultyComboBox->addItem("Hard");
 
-    //Connecting combobox to slot to detect changes
     connect(difficultyComboBox,
             &QComboBox::currentIndexChanged,
             this,
             &DifficultySelector::onDifficultyChanged);
+    connect(okButton, &QPushButton::clicked, this, &DifficultySelector::onOkButtonClicked);
+
+    // Set dialog layout
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(difficultyComboBox);
+    layout->addWidget(okButton);
+    setLayout(layout);
+
+    setWindowTitle("Select Difficulty");
 }
 
 void DifficultySelector::onDifficultyChanged(int index)
 {
-    int rows, columns;
     switch (index) {
-    case 0: //Easy
+    case 0: // Easy
         rows = 8;
         columns = 8;
         break;
-    case 1: //Medium
+    case 1: // Medium
+        rows = 10;
+        columns = 10;
+        break;
+    case 2: // Hard
         rows = 16;
         columns = 16;
         break;
-    case 2: //Hard
-        rows = 24;
-        columns = 24;
-        break;
     }
-    emit difficultyChanged(rows, columns); //Emit the signal with the new dimensions
 }
 
-int DifficultySelector::getSelectedDifficulty() const
+void DifficultySelector::onOkButtonClicked()
 {
-    return difficultyComboBox->currentIndex();
+    emit difficultyConfirmed(rows, columns); // Emit signal with selected difficulty
+    accept();                                // Close the dialog
+}
+
+int DifficultySelector::getRows() const
+{
+    return rows;
+}
+int DifficultySelector::getColumns() const
+{
+    return columns;
 }

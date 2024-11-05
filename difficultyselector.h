@@ -2,24 +2,30 @@
 #define DIFFICULTYSELECTOR_H
 
 #include <QComboBox>
-#include <QObject>
-#include <QWidget>
+#include <QDialog>
+#include <QPushButton>
 
-class DifficultySelector : public QWidget
+class DifficultySelector : public QDialog
 {
     Q_OBJECT
 public:
     explicit DifficultySelector(QWidget *parent = nullptr);
-    int getSelectedDifficulty() const;
+
+    int getRows() const;
+    int getColumns() const;
 
 signals:
-    void difficultyChanged(int rows, int columns); //Signal emitted when difficulty changes
+    void difficultyConfirmed(int rows, int columns); // Signal for confirming difficulty
 
 private:
-    QComboBox *difficultyComboBox; //Combo box for selecting difficulty
+    QComboBox *difficultyComboBox;
+    QPushButton *okButton; // OK button for confirming difficulty selection
+    int rows;
+    int columns;
 
 private slots:
-    void onDifficultyChanged(int index); //Slot for handling difficulty changes
+    void onDifficultyChanged(int index);
+    void onOkButtonClicked(); // Slot for handling OK button click
 };
 
 #endif // DIFFICULTYSELECTOR_H

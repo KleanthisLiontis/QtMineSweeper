@@ -1,12 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
-#include "difficultySelector.h"
+#include "difficultyselector.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,17 +24,14 @@ public:
 private:
     Ui::MainWindow *ui;
     QGridLayout *gridLayout;
-    QLabel *statusLabel;                    //To display game status messages
-    QPushButton *resetButton;               //Button to reset the game
-    QComboBox *difficultyComboBox;          //Combo box for difficulty settings
-    DifficultySelector *difficultySelector; //Pointer to difficulty selector
-    bool isInitialized = false;             //Variable to check for resetting the game
+    QLabel *statusLabel;
+    QPushButton *resetButton;
+    bool isInitialized;
 
-    //function to setup dynamic grid based on difficulty
     void setupGrid(int rows, int columns);
     void resetGame();
 
 private slots:
-    void updateGridBasedOnDifficulty(const QString &difficulty);
+    void updateGridBasedOnDifficulty(int rows, int columns);
 };
 #endif // MAINWINDOW_H

@@ -3,102 +3,67 @@
 #include <QLabel>
 #include "./ui_mainwindow.h"
 #include "QPushButton"
+#include "difficultyselector.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , gridLayout(new QGridLayout()) // For game layout
+    , gridLayout(new QGridLayout(this))
 {
     ui->setupUi(this);
 
-    // Initialize grid and add it to central widget
-    gridLayout = new QGridLayout(this); // Make gridLayout a member variable in the header file
-    //Check the central widget if it has a layout and replace it
+    // Initialize grid and set it on central widget
     if (ui->centralwidget->layout()) {
-        QLayoutItem *child;
-        while ((child = ui->centralwidget->layout()->takeAt(0))) {
-            delete child->widget();
-            delete child;
-        }
+        delete ui->centralwidget->layout(); // Remove any existing layout
     }
-
     ui->centralwidget->setLayout(gridLayout);
 
-    //Initialize status label
+    // Initialize status label
     statusLabel = new QLabel("Welcome to Minesweeper!", this);
-    statusLabel->setAlignment(Qt::AlignCenter);      // Center text
-    gridLayout->addWidget(statusLabel, 0, 0, 1, 10); // Span across the gridLayout
+    statusLabel->setAlignment(Qt::AlignCenter);
+    gridLayout->addWidget(statusLabel, 0, 0, 1, 10);
 
-    /// Initialize the reset button
+    // Initialize the reset button
     resetButton = new QPushButton("New Game", this);
-    gridLayout->addWidget(resetButton, 1, 0, 1, 10); // Place below the status label
-    //Connect the reset button signal to a slot(for later);
-    connect(resetButton, &QPushButton::clicked, this, &MainWindow::resetGame);
+    gridLayout->addWidget(resetButton, 1, 0, 1, 10);
+    connect(resetButton, &QPushButton::clicked, this, &MainWindow::showDifficultySelector);
 
-    // Initialize the difficulty combo box
-    difficultyComboBox = new QComboBox(this);
-    difficultyComboBox->addItem("Easy");
-    difficultyComboBox->addItem("Medium");
-    difficultyComboBox->addItem("Hard");
-    gridLayout->addWidget(difficultyComboBox, 2, 0, 1, 10); // Place below the reset button
-    connect(difficultyComboBox,
-            &QComboBox::currentTextChanged,
-            this,
-            &MainWindow::updateGridBasedOnDifficulty);
-
-    // Setup initial grid with medium difficulty
-    setupGrid(10, 10);
+    // Show difficulty selection dialog initially
+    showDifficultySelector();
 }
 
-MainWindow::~MainWindow()
+void MainWindow::showDifficultySelector()
 {
-    delete ui;
+    DifficultySelector *difficultySelector = new DifficultySelector(this);
+
+    connect(difficultySelector,
+            &DifficultySelector::difficultyConfirmed,
+            this,
+            &MainWindow::setupGrid);
+
+    difficultySelector->exec();
 }
 
-//Function do dynamically initialize the grid
 void MainWindow::setupGrid(int rows, int columns)
 {
-    //Clear existing items on GridLayout
+    // Clear existing items on GridLayout
     QLayoutItem *child;
-    child = gridLayout;
-    //child->~QLayoutItem();
-    // while ((child = gridLayout->takeAt(0)->isEmpty() == false)) {
-    //     delete child->widget();
-    //     delete child;
-    // }
+    while ((child = gridLayout->takeAt(0)) != nullptr) {
+        delete child->widget();
+        delete child;
+    }
 
-    //Populate grid with button for each cell
     // Populate grid with buttons for each cell
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < columns; ++col) {
             QPushButton *button = new QPushButton(this);
-            button->setFixedSize(30, 30); // Set a fixed size for each button
+            button->setFixedSize(30, 30);
             gridLayout->addWidget(button, row, col);
         }
     }
 }
 
-// Function to reset the game
-void MainWindow::resetGame()
+MainWindow::~MainWindow()
 {
-    if (!isInitialized) {
-        setupGrid(10, 10); // Default to medium grid if not initialized
-        isInitialized = true;
-    } else {
-        QString currentDifficulty = difficultyComboBox->currentText();
-        updateGridBasedOnDifficulty(currentDifficulty);
-    }
-}
-
-// Function to update grid size based on selected difficulty
-void MainWindow::updateGridBasedOnDifficulty(const QString &difficulty)
-{
-    if (difficulty == "Easy") {
-        setupGrid(8, 8); // Example grid size for easy
-    } else if (difficulty == "Medium") {
-        setupGrid(10, 10); // Example grid size for medium
-    } else if (difficulty == "Hard") {
-        setupGrid(16, 16); // Example grid size for hard
-    }
-    isInitialized = true; // Mark as initialized once difficulty is set
+    delete ui;
 }
